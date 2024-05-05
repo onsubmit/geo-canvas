@@ -1,13 +1,13 @@
-import { Coordinate } from '../Coordinate';
+import { Circle } from './Circle';
 import { Point } from './Point';
 
 export class PointFactory {
-  static aroundCircle = (origin: Coordinate, radius: number, speed: number): Point => {
+  static aroundCircle = (circle: Circle, speed: number): Point => {
     return Point.withGetCoordsAtTime((t) => {
       const rotation = t * speed;
       return {
-        x: origin.x + radius * Math.cos(rotation),
-        y: origin.y + radius * Math.sin(rotation),
+        x: circle.origin.x + circle.radius * Math.cos(rotation),
+        y: circle.origin.y + circle.radius * Math.sin(rotation),
       };
     });
   };

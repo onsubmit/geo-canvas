@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { CanvasModel } from '../../CanvasModel';
+import { Colors } from '../../Colors';
+import { Circle } from '../../Drawables/Circle';
 import { Drawable } from '../../Drawables/Drawable';
 import { PointFactory } from '../../Drawables/PointFactory';
 import { CartesianPlane } from '../CartesianPlane';
@@ -47,10 +49,12 @@ function MainScene() {
       return;
     }
 
-    const leftCirclePoint = PointFactory.aroundCircle({ x: 0, y: 0 }, 1, 0.004);
-    const rightCirclePoint = PointFactory.aroundCircle({ x: 3, y: 1 }, 1, 0.003);
+    const leftCircle = new Circle({ x: 0, y: 0 }, 1, Colors.lightGrey);
+    const rightCircle = new Circle({ x: 3, y: 1 }, 1, Colors.lightGrey);
+    const leftCirclePoint = PointFactory.aroundCircle(leftCircle, 0.004);
+    const rightCirclePoint = PointFactory.aroundCircle(rightCircle, 0.003);
 
-    setDrawables([leftCirclePoint, rightCirclePoint]);
+    setDrawables([leftCircle, leftCirclePoint, rightCircle, rightCirclePoint]);
   }
 
   return <Scene ref={canvasRef} {...{ canvasModel, drawables }}></Scene>;

@@ -18,7 +18,6 @@ export default class Drawer {
   };
 
   draw = (drawable: Drawable, time: DOMHighResTimeStamp): void => {
-    const color = drawable.getColor(time);
-    drawable.draw(time, this._canvasModel, color);
+    drawable.draw(time, this._canvasModel);
   };
 }

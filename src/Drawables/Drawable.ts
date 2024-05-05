@@ -1,10 +1,15 @@
 import { CanvasModel } from '../CanvasModel';
+import { ColorAtTimeFn, Colors } from '../Colors';
 import { Coordinate } from '../Coordinate';
 
 export abstract class Drawable {
-  abstract draw(time: DOMHighResTimeStamp, canvasModel: CanvasModel, color: string): void;
+  protected getColor: ColorAtTimeFn;
 
-  getColor = (_time: number): string => '#000';
+  constructor(getColorAtTimeFn?: ColorAtTimeFn) {
+    this.getColor = getColorAtTimeFn ?? Colors.black;
+  }
+
+  abstract draw(time: DOMHighResTimeStamp, canvasModel: CanvasModel): void;
 
   protected mapCoordsToCanvas = (c: Coordinate, canvasModel: CanvasModel): Coordinate => {
     return {
@@ -19,4 +24,7 @@ export abstract class Drawable {
       ),
     };
   };
+
+  protected scaleLengthToCanvas = (length: number, canvasModel: CanvasModel): number =>
+    length * canvasModel.canvasScale;
 }

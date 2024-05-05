@@ -22,11 +22,11 @@ export class Point extends Drawable {
     return point;
   };
 
-  draw = (time: DOMHighResTimeStamp, canvasModel: CanvasModel, color: string) => {
+  draw = (time: DOMHighResTimeStamp, canvasModel: CanvasModel) => {
     const c = this._getCoordsAtTime(time);
     const p = this.mapCoordsToCanvas(c, canvasModel);
     canvasModel.context.beginPath();
-    canvasModel.context.fillStyle = color || '#000';
+    canvasModel.context.fillStyle = this.getColor(time);
     canvasModel.context.arc(p.x, p.y, Point.RADIUS, 0, Constants.TWO_PI);
     canvasModel.context.closePath();
     canvasModel.context.fill();

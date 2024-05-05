@@ -3,6 +3,7 @@ import { Dimensions } from './Dimensions';
 
 export class CanvasModel {
   context: CanvasRenderingContext2D;
+  canvasScale: number;
   cartesianDimensions: Dimensions;
   canvasDimensions: Dimensions;
   cartesianPlane: CartesianPlane;
@@ -19,6 +20,7 @@ export class CanvasModel {
     };
 
     this.context = context;
+    this.canvasScale = canvasScale;
     this.cartesianDimensions = cartesianDimensions;
     this.canvasDimensions = canvasDimensions;
     this.cartesianPlane = cartesianPlane;
