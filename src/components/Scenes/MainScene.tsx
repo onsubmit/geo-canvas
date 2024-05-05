@@ -47,8 +47,8 @@ function MainScene() {
       return;
     }
 
-    const leftCirclePoint = PointFactory.aroundCircle({ x: 0, y: 0 }, 1, 0.004, canvasModel);
-    const rightCirclePoint = PointFactory.aroundCircle({ x: 3, y: 1 }, 1, 0.003, canvasModel);
+    const leftCirclePoint = PointFactory.aroundCircle({ x: 0, y: 0 }, 1, 0.004);
+    const rightCirclePoint = PointFactory.aroundCircle({ x: 3, y: 1 }, 1, 0.003);
 
     setDrawables([leftCirclePoint, rightCirclePoint]);
   }

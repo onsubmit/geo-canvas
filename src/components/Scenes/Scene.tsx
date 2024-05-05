@@ -2,6 +2,7 @@ import { forwardRef, useEffect } from 'react';
 
 import { CanvasModel } from '../../CanvasModel';
 import { Drawable } from '../../Drawables/Drawable';
+import Drawer from '../../Drawer';
 import { Canvas } from '../Canvas';
 import styles from './Scene.module.css';
 
@@ -26,8 +27,10 @@ const Scene = forwardRef<HTMLCanvasElement, SceneProps>(function Scene(
         return;
       }
 
-      canvasModel.context.clearRect(0, 0, canvasModel.dimensions.width, canvasModel.dimensions.height);
-      drawables.forEach((d) => d.draw(time));
+      const drawer = new Drawer(canvasModel);
+      drawer.clear();
+
+      drawables.forEach((d) => drawer.draw(d, time));
 
       window.requestAnimationFrame(step);
     }
@@ -39,8 +42,8 @@ const Scene = forwardRef<HTMLCanvasElement, SceneProps>(function Scene(
     <Canvas
       ref={ref}
       className={styles.canvas}
-      width={canvasModel?.dimensions.width ?? 0}
-      height={canvasModel?.dimensions.height ?? 0}
+      width={canvasModel?.canvasDimensions.width ?? 0}
+      height={canvasModel?.canvasDimensions.height ?? 0}
       onContextMenu={(e: CanvasMouseEvent) => {
         e.preventDefault();
       }}

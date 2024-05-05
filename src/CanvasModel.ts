@@ -3,17 +3,24 @@ import { Dimensions } from './Dimensions';
 
 export class CanvasModel {
   context: CanvasRenderingContext2D;
-  dimensions: Dimensions;
+  cartesianDimensions: Dimensions;
+  canvasDimensions: Dimensions;
   cartesianPlane: CartesianPlane;
 
   constructor(context: CanvasRenderingContext2D, canvasScale: number, cartesianPlane: CartesianPlane) {
+    const cartesianDimensions = {
+      width: cartesianPlane.x.max - cartesianPlane.x.min,
+      height: cartesianPlane.y.max - cartesianPlane.y.min,
+    };
+
     const canvasDimensions = {
-      width: canvasScale * (cartesianPlane.x.max - cartesianPlane.x.min),
-      height: canvasScale * (cartesianPlane.y.max - cartesianPlane.y.min),
+      width: canvasScale * cartesianDimensions.width,
+      height: canvasScale * cartesianDimensions.height,
     };
 
     this.context = context;
-    this.dimensions = canvasDimensions;
+    this.cartesianDimensions = cartesianDimensions;
+    this.canvasDimensions = canvasDimensions;
     this.cartesianPlane = cartesianPlane;
   }
 }
