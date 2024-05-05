@@ -9,7 +9,7 @@ import { CartesianPlane } from '../CartesianPlane';
 import Scene from './Scene';
 
 function MainScene() {
-  const CANVAS_SCALE = 100;
+  const CANVAS_SCALE = 50;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [canvasModel, setCanvasModel] = useState<CanvasModel | null>(null);
@@ -30,14 +30,15 @@ function MainScene() {
       throw new Error('Could not get canvas drawing context');
     }
 
+    const range = 10;
     const cartesianPlane: CartesianPlane = {
       x: {
-        min: -2,
-        max: 5,
+        min: -range,
+        max: range,
       },
       y: {
-        min: -2,
-        max: 4,
+        min: -range,
+        max: range,
       },
     };
 
@@ -49,12 +50,22 @@ function MainScene() {
       return;
     }
 
-    const leftCircle = new Circle({ x: 0, y: 0 }, 1, Colors.lightGrey);
-    const rightCircle = new Circle({ x: 3, y: 1 }, 1, Colors.lightGrey);
+    const leftCircle = new Circle(PointFactory.constant({ x: 0, y: 0 }), 1, Colors.lightGrey);
+    const rightCircle = new Circle(PointFactory.constant({ x: 3, y: 1 }), 1, Colors.lightGrey);
     const leftCirclePoint = PointFactory.aroundCircle(leftCircle, 0.004);
     const rightCirclePoint = PointFactory.aroundCircle(rightCircle, 0.003);
 
-    setDrawables([leftCircle, leftCirclePoint, rightCircle, rightCirclePoint]);
+    const circleAroundLeftCirclePoint = new Circle(leftCirclePoint, 3, Colors.lightGrey);
+    const circleAroundRightCirclePoint = new Circle(rightCirclePoint, 3, Colors.lightGrey);
+
+    setDrawables([
+      leftCircle,
+      leftCirclePoint,
+      rightCircle,
+      rightCirclePoint,
+      circleAroundLeftCirclePoint,
+      circleAroundRightCirclePoint,
+    ]);
   }
 
   return <Scene ref={canvasRef} {...{ canvasModel, drawables }}></Scene>;
