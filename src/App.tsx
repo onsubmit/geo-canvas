@@ -1,33 +1,49 @@
 import './App.css';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import viteLogo from '/vite.svg';
+import { Canvas } from './components/canvas';
 
-import reactLogo from './assets/react.svg';
+type CanvasMouseEvent = React.MouseEvent<HTMLCanvasElement, MouseEvent>;
 
 function App() {
-  const [count, setCount] = useState(0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
+
+  useEffect(() => {
+    if (!canvasRef.current) {
+      return;
+    }
+
+    if (context) {
+      redraw(canvasRef.current);
+    } else {
+      setContext(canvasRef.current.getContext('2d'));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [context]);
+
+  function getContext() {
+    if (!context) {
+      throw new Error('No context');
+    }
+
+    return context;
+  }
+
+  function redraw(canvas: HTMLCanvasElement) {
+    getContext().clearRect(0, 0, canvas.width, canvas.height);
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-    </>
+    <Canvas
+      ref={canvasRef}
+      width="1000"
+      height="1000"
+      onContextMenu={(e: CanvasMouseEvent) => {
+        e.preventDefault();
+      }}
+    ></Canvas>
   );
 }
 
