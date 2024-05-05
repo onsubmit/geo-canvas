@@ -30,15 +30,14 @@ function MainScene() {
       throw new Error('Could not get canvas drawing context');
     }
 
-    const range = 10;
     const cartesianPlane: CartesianPlane = {
       x: {
-        min: -range,
-        max: range,
+        min: -6,
+        max: 10,
       },
       y: {
-        min: -range,
-        max: range,
+        min: -7,
+        max: 8,
       },
     };
 
@@ -50,13 +49,39 @@ function MainScene() {
       return;
     }
 
-    const leftCircle = new Circle(PointFactory.constant({ x: 0, y: 0 }), 1, Colors.lightGrey);
-    const rightCircle = new Circle(PointFactory.constant({ x: 3, y: 1 }), 1, Colors.lightGrey);
-    const leftCirclePoint = PointFactory.aroundCircle(leftCircle, 0.004);
-    const rightCirclePoint = PointFactory.aroundCircle(rightCircle, 0.003);
+    const leftCircle = new Circle({
+      origin: PointFactory.constant({ x: 0, y: 0 }),
+      radius: 1,
+      color: Colors.lightGrey,
+    });
 
-    const circleAroundLeftCirclePoint = new Circle(leftCirclePoint, 3, Colors.lightGrey);
-    const circleAroundRightCirclePoint = new Circle(rightCirclePoint, 3, Colors.lightGrey);
+    const rightCircle = new Circle({
+      origin: PointFactory.constant({ x: 3, y: 1 }),
+      radius: 1,
+      color: Colors.lightGrey,
+    });
+
+    const leftCirclePoint = PointFactory.aroundCircle({
+      circle: leftCircle,
+      speed: 0.004,
+    });
+
+    const rightCirclePoint = PointFactory.aroundCircle({
+      circle: rightCircle,
+      speed: 0.003,
+    });
+
+    const circleAroundLeftCirclePoint = new Circle({
+      origin: leftCirclePoint,
+      radius: 3,
+      color: Colors.lightGrey,
+    });
+
+    const circleAroundRightCirclePoint = new Circle({
+      origin: rightCirclePoint,
+      radius: 3,
+      color: Colors.lightGrey,
+    });
 
     setDrawables([
       leftCircle,

@@ -3,7 +3,9 @@ import { Circle } from './Circle';
 import { Point } from './Point';
 
 export class PointFactory {
-  static aroundCircle = (circle: Circle, speed: number): Point => {
+  static aroundCircle = (args: { circle: Circle; speed: number }): Point => {
+    const { circle, speed } = args;
+
     return Point.withGetCoordsAtTime((time) => {
       const rotation = time * speed;
       return {

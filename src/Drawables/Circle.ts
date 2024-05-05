@@ -4,12 +4,18 @@ import { Constants } from '../Constants';
 import { Drawable } from './Drawable';
 import { Point } from './Point';
 
+export type CircleArgs = {
+  origin: Point;
+  radius: number;
+  color?: ColorAtTimeFn;
+};
+
 export class Circle extends Drawable {
   private _origin: Point;
   private _radius: number;
 
-  constructor(origin: Point, radius: number, getColorAtTimeFn?: ColorAtTimeFn) {
-    super(getColorAtTimeFn);
+  constructor({ origin, radius, color }: CircleArgs) {
+    super(color);
     this._origin = origin;
     this._radius = radius;
   }
