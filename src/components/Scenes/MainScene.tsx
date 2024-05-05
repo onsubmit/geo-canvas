@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { CanvasModel } from '../../CanvasModel';
 import { Drawable } from '../../Drawables/Drawable';
-import { Point } from '../../Drawables/Point';
+import { PointFactory } from '../../Drawables/PointFactory';
 import { CartesianPlane } from '../CartesianPlane';
 import Scene from './Scene';
 
@@ -47,21 +47,8 @@ function MainScene() {
       return;
     }
 
-    const leftCirclePoint = Point.withGetCoordsAtTime((t) => {
-      const rotation = t * 0.004;
-      return {
-        x: Math.cos(rotation),
-        y: Math.sin(rotation),
-      };
-    }, canvasModel);
-
-    const rightCirclePoint = Point.withGetCoordsAtTime((t) => {
-      const rotation = t * 0.003;
-      return {
-        x: 3 - Math.cos(rotation),
-        y: 1 - Math.sin(rotation),
-      };
-    }, canvasModel);
+    const leftCirclePoint = PointFactory.aroundCircle({ x: 0, y: 0 }, 1, 0.004, canvasModel);
+    const rightCirclePoint = PointFactory.aroundCircle({ x: 3, y: 1 }, 1, 0.003, canvasModel);
 
     setDrawables([leftCirclePoint, rightCirclePoint]);
   }
