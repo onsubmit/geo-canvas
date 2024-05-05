@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './App.module.css';
 import { CanvasModel } from './CanvasModel';
 import { Canvas } from './components/Canvas';
-import { Drawable } from './Drawable';
-import { Point } from './Point';
+import { Drawable } from './Drawables/Drawable';
+import { Point } from './Drawables/Point';
 
 type CanvasMouseEvent = React.MouseEvent<HTMLCanvasElement, MouseEvent>;
 

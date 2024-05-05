@@ -1,6 +1,6 @@
-import { CanvasModel } from './CanvasModel';
-import { Constants } from './Constants';
-import { Coordinate } from './Coordinate';
+import { CanvasModel } from '../CanvasModel';
+import { Constants } from '../Constants';
+import { Coordinate } from '../Coordinate';
 import { Drawable } from './Drawable';
 
 export class Point extends Drawable {

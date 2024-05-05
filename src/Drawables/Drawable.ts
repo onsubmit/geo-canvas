@@ -1,5 +1,5 @@
-import { CanvasModel } from './CanvasModel';
-import { Coordinate } from './Coordinate';
+import { CanvasModel } from '../CanvasModel';
+import { Coordinate } from '../Coordinate';
 
 export abstract class Drawable {
   private _cartesianWidth: number;
