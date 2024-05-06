@@ -4,6 +4,7 @@ import { CanvasModel } from '../../CanvasModel';
 import { Colors } from '../../Colors';
 import { Circle } from '../../Drawables/Circle';
 import { Drawable } from '../../Drawables/Drawable';
+import { LineSegment } from '../../Drawables/LineSegment';
 import { PointFactory } from '../../Drawables/PointFactory';
 import { CartesianPlane } from '../CartesianPlane';
 import Scene from './Scene';
@@ -88,6 +89,17 @@ function MainScene() {
       circleAroundRightCirclePoint
     );
 
+    const linesToIntersections = [
+      new LineSegment({ point1: leftCirclePoint, point2: circleIntersections1[1], color: Colors.lightGrey }),
+      new LineSegment({ point1: rightCirclePoint, point2: circleIntersections1[1], color: Colors.lightGrey }),
+    ];
+
+    const circleCenteredAtIntersection = new Circle({
+      origin: circleIntersections1[1],
+      radius: 1,
+      color: Colors.lightGrey,
+    });
+
     setDrawables([
       leftCircle,
       leftCirclePoint,
@@ -97,6 +109,8 @@ function MainScene() {
       circleAroundRightCirclePoint,
       circleIntersections1[0],
       circleIntersections1[1],
+      ...linesToIntersections,
+      circleCenteredAtIntersection,
     ]);
   }
 
