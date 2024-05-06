@@ -1,10 +1,15 @@
+import { Constants } from '../Constants';
 import { Coordinate } from '../Coordinate';
 import { Circle } from './Circle';
 import { Point } from './Point';
 
 export class PointFactory {
-  static aroundCircle = (args: { circle: Circle; speed: number }): Point => {
-    const { circle, speed } = args;
+  static aroundCircle = (args: {
+    circle: Circle;
+    speed: number;
+    direction?: 'clockwise' | 'counter-clockwise';
+  }): Point => {
+    const { circle, speed, direction = 'counter-clockwise' } = args;
 
     return Point.withGetCoordsAtTime((time) => {
       const rotation = time * speed;
@@ -14,10 +19,17 @@ export class PointFactory {
         return null;
       }
 
-      return {
-        x: origin.x + circle.radius * Math.cos(rotation),
-        y: origin.y + circle.radius * Math.sin(rotation),
-      };
+      if (direction === 'counter-clockwise') {
+        return {
+          x: origin.x + circle.radius * Math.cos(rotation),
+          y: origin.y + circle.radius * Math.sin(rotation),
+        };
+      } else {
+        return {
+          x: origin.x + circle.radius * Math.cos(Constants.TWO_PI - rotation),
+          y: origin.y + circle.radius * Math.sin(Constants.TWO_PI - rotation),
+        };
+      }
     });
   };
 
