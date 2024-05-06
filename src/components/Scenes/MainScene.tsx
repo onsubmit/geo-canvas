@@ -89,6 +89,8 @@ function MainScene() {
       circleAroundRightCirclePoint
     );
 
+    circleIntersections1[1].toggleTracing();
+
     const linesToIntersections = [
       new LineSegment({ point1: leftCirclePoint, point2: circleIntersections1[1], color: Colors.lightGrey }),
       new LineSegment({ point1: rightCirclePoint, point2: circleIntersections1[1], color: Colors.lightGrey }),
