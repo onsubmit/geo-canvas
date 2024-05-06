@@ -29,7 +29,12 @@ export class Circle extends Drawable {
   }
 
   draw = (time: number, canvasModel: CanvasModel): void => {
-    const p = this.mapCoordsToCanvas(this._origin.getCoordsAtTime(time), canvasModel);
+    const c = this._origin.getCoordsAtTime(time);
+    if (!c) {
+      return;
+    }
+
+    const p = this.mapCoordsToCanvas(c, canvasModel);
     canvasModel.context.beginPath();
     canvasModel.context.strokeStyle = this.getColor(time);
     canvasModel.context.arc(p.x, p.y, this.scaleLengthToCanvas(this._radius, canvasModel), 0, Constants.TWO_PI);

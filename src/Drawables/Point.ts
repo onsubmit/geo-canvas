@@ -6,7 +6,7 @@ import { Drawable } from './Drawable';
 export class Point extends Drawable {
   private static RADIUS = 2;
 
-  static withGetCoordsAtTime = (getCoordsAtTime: (timeStamp: number) => Coordinate): Point => {
+  static withGetCoordsAtTime = (getCoordsAtTime: (time: DOMHighResTimeStamp) => Coordinate | null): Point => {
     const point = new Point();
     point.getCoordsAtTime = getCoordsAtTime;
     return point;
@@ -18,12 +18,16 @@ export class Point extends Drawable {
     return point;
   };
 
-  getCoordsAtTime: (timeStamp: number) => Coordinate = (_) => {
+  getCoordsAtTime: (timeStamp: number) => Coordinate | null = (_) => {
     throw new Error('Not implemented');
   };
 
   draw = (time: DOMHighResTimeStamp, canvasModel: CanvasModel) => {
     const c = this.getCoordsAtTime(time);
+    if (!c) {
+      return;
+    }
+
     const p = this.mapCoordsToCanvas(c, canvasModel);
     canvasModel.context.beginPath();
     canvasModel.context.fillStyle = this.getColor(time);

@@ -83,6 +83,11 @@ function MainScene() {
       color: Colors.lightGrey,
     });
 
+    const circleIntersections1 = PointFactory.circleIntersections(
+      circleAroundLeftCirclePoint,
+      circleAroundRightCirclePoint
+    );
+
     setDrawables([
       leftCircle,
       leftCirclePoint,
@@ -90,6 +95,8 @@ function MainScene() {
       rightCirclePoint,
       circleAroundLeftCirclePoint,
       circleAroundRightCirclePoint,
+      circleIntersections1[0],
+      circleIntersections1[1],
     ]);
   }
 
