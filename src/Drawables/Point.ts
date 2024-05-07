@@ -4,9 +4,9 @@ import { Coordinate } from '../Coordinate';
 import { Drawable } from './Drawable';
 
 export class Point extends Drawable {
-  private static RADIUS = 1;
+  private static RADIUS = 0.5;
 
-  private _traceCoordinates: Array<Coordinate> = [];
+  private _previousPoint: Coordinate | undefined;
   private _trace = false;
 
   static withGetCoordsAtTime = (getCoordsAtTime: (time: DOMHighResTimeStamp) => Coordinate | null): Point => {
@@ -25,10 +25,6 @@ export class Point extends Drawable {
     this._trace = !this._trace;
   };
 
-  resetTrace = () => {
-    this._traceCoordinates = [];
-  };
-
   getCoordsAtTime: (timeStamp: number) => Coordinate | null = (_) => {
     throw new Error('Not implemented');
   };
@@ -42,15 +38,22 @@ export class Point extends Drawable {
     const p = this.mapCoordsToCanvas(c, canvasModel);
 
     if (this._trace) {
-      this._traceCoordinates.push(p);
+      if (this._previousPoint) {
+        canvasModel.context.strokeStyle = this.getColor(time);
+        canvasModel.context.moveTo(this._previousPoint.x, this._previousPoint.y);
+        canvasModel.context.lineTo(p.x, p.y);
+        canvasModel.context.closePath();
+        canvasModel.context.stroke();
+      }
+
+      this._previousPoint = p;
+      return;
     }
 
-    (this._trace ? this._traceCoordinates : [p]).forEach((p) => {
-      canvasModel.context.beginPath();
-      canvasModel.context.fillStyle = this.getColor(time);
-      canvasModel.context.arc(p.x, p.y, Point.RADIUS, 0, Constants.TWO_PI);
-      canvasModel.context.closePath();
-      canvasModel.context.fill();
-    });
+    canvasModel.context.beginPath();
+    canvasModel.context.fillStyle = this.getColor(time);
+    canvasModel.context.arc(p.x, p.y, Point.RADIUS, 0, Constants.TWO_PI);
+    canvasModel.context.closePath();
+    canvasModel.context.fill();
   };
 }

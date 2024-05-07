@@ -28,7 +28,6 @@ const Scene = forwardRef<HTMLCanvasElement, SceneProps>(function Scene(
       }
 
       const drawer = new Drawer(canvasModel);
-      drawer.clear();
 
       drawables.forEach((d) => drawer.draw(d, time));
 
