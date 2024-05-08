@@ -6,8 +6,6 @@ import Drawer from '../../Drawer';
 import { Canvas } from '../Canvas';
 import styles from './Scene.module.css';
 
-type CanvasMouseEvent = React.MouseEvent<HTMLCanvasElement, MouseEvent>;
-
 export type SceneProps = {
   canvasModel: CanvasModel | null;
   drawables: Array<Drawable>;
@@ -43,9 +41,6 @@ const Scene = forwardRef<HTMLCanvasElement, SceneProps>(function Scene(
       className={styles.canvas}
       width={canvasModel?.canvasDimensions.width ?? 0}
       height={canvasModel?.canvasDimensions.height ?? 0}
-      onContextMenu={(e: CanvasMouseEvent) => {
-        e.preventDefault();
-      }}
     ></Canvas>
   );
 });
