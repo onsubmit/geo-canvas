@@ -4,7 +4,7 @@ import { Coordinate } from '../Coordinate';
 import { Drawable } from './Drawable';
 
 export class Point extends Drawable {
-  private static RADIUS = 0.5;
+  private static RADIUS = 4;
 
   private _previousPoint: Coordinate | undefined;
   private _trace = false;

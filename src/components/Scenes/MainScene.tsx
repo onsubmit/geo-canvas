@@ -3,31 +3,35 @@ import { useEffect, useRef, useState } from 'react';
 import { CanvasModel } from '../../CanvasModel';
 import { Colors } from '../../Colors';
 import { Circle } from '../../Drawables/Circle';
-import { Drawable } from '../../Drawables/Drawable';
+import { LineSegment } from '../../Drawables/LineSegment';
 import { PointFactory } from '../../Drawables/PointFactory';
 import { CartesianPlane } from '../CartesianPlane';
-import Scene from './Scene';
+import Scene, { SceneCanvases, SceneProps } from './Scene';
 
 function MainScene() {
   const CANVAS_SCALE = 80;
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [canvasModel, setCanvasModel] = useState<CanvasModel | null>(null);
-  const [drawables, setDrawables] = useState<Array<Drawable>>([]);
+  const sceneCanvasesRef = useRef<SceneCanvases | null>(null);
+  const [sceneProps, setSceneProps] = useState<SceneProps | null>(null);
 
   useEffect(() => {
-    if (!canvasRef.current) {
+    if (!sceneCanvasesRef.current?.background || !sceneCanvasesRef.current.trace) {
       return;
     }
 
-    if (canvasModel) {
-      draw(canvasModel);
+    if (sceneProps?.background?.canvasModel && sceneProps.trace?.canvasModel) {
+      draw();
       return;
     }
 
-    const context = canvasRef.current.getContext('2d');
-    if (!context) {
-      throw new Error('Could not get canvas drawing context');
+    const backgroundCanvasContext = sceneCanvasesRef.current.background.getContext('2d');
+    if (!backgroundCanvasContext) {
+      throw new Error('Could not get background canvas drawing context');
+    }
+
+    const traceCanvasContext = sceneCanvasesRef.current.trace.getContext('2d');
+    if (!traceCanvasContext) {
+      throw new Error('Could not get trace canvas drawing context');
     }
 
     const cartesianPlane: CartesianPlane = {
@@ -41,24 +45,29 @@ function MainScene() {
       },
     };
 
-    setCanvasModel(new CanvasModel(context, CANVAS_SCALE, cartesianPlane));
-  }, [canvasModel]);
+    setSceneProps({
+      background: {
+        canvasModel: new CanvasModel(backgroundCanvasContext, CANVAS_SCALE, cartesianPlane),
+        drawables: [],
+      },
+      trace: {
+        canvasModel: new CanvasModel(traceCanvasContext, CANVAS_SCALE, cartesianPlane),
+        drawables: [],
+      },
+    });
+  }, [sceneProps?.background?.canvasModel, sceneProps?.trace?.canvasModel]);
 
-  function draw(canvasModel: CanvasModel) {
-    if (!canvasModel) {
-      return;
-    }
-
+  function draw() {
     const leftCircle = new Circle({
       origin: PointFactory.constant({ x: 0, y: 0 }),
       radius: 1,
-      color: Colors.veryLightGrey,
+      color: Colors.lightGrey,
     });
 
     const rightCircle = new Circle({
       origin: PointFactory.constant({ x: 3, y: 1 }),
       radius: 1,
-      color: Colors.veryLightGrey,
+      color: Colors.lightGrey,
     });
 
     const leftCirclePoint = PointFactory.aroundCircle({
@@ -75,13 +84,13 @@ function MainScene() {
     const circleAroundLeftCirclePoint = new Circle({
       origin: leftCirclePoint,
       radius: 3,
-      color: Colors.veryLightGrey,
+      color: Colors.lightGrey,
     });
 
     const circleAroundRightCirclePoint = new Circle({
       origin: rightCirclePoint,
       radius: 3,
-      color: Colors.veryLightGrey,
+      color: Colors.lightGrey,
     });
 
     const circleIntersections1 = PointFactory.circleIntersections(
@@ -89,15 +98,15 @@ function MainScene() {
       circleAroundRightCirclePoint
     );
 
-    // const linesToIntersections = [
-    //   new LineSegment({ point1: leftCirclePoint, point2: circleIntersections1[1], color: Colors.veryLightGrey }),
-    //   new LineSegment({ point1: rightCirclePoint, point2: circleIntersections1[1], color: Colors.veryLightGrey }),
-    // ];
+    const linesToIntersections = [
+      new LineSegment({ point1: leftCirclePoint, point2: circleIntersections1[1], color: Colors.lightGrey }),
+      new LineSegment({ point1: rightCirclePoint, point2: circleIntersections1[1], color: Colors.lightGrey }),
+    ];
 
     const circleCenteredAtIntersection = new Circle({
       origin: circleIntersections1[1],
       radius: 2,
-      color: Colors.veryLightGrey,
+      color: Colors.lightGrey,
     });
 
     const circleCenteredAtIntersectionPoint = PointFactory.aroundCircle({
@@ -107,22 +116,36 @@ function MainScene() {
 
     circleCenteredAtIntersectionPoint.toggleTracing();
 
-    setDrawables([
-      // leftCircle,
-      // leftCirclePoint,
-      // rightCircle,
-      // rightCirclePoint,
-      // circleAroundLeftCirclePoint,
-      // circleAroundRightCirclePoint,
-      // circleIntersections1[0],
-      // circleIntersections1[1],
-      // ...linesToIntersections,
-      // circleCenteredAtIntersection,
-      circleCenteredAtIntersectionPoint,
-    ]);
+    setSceneProps((prev) => {
+      if (!prev) {
+        return null;
+      }
+
+      return {
+        background: {
+          canvasModel: prev.background?.canvasModel ?? null,
+          drawables: [
+            leftCircle,
+            leftCirclePoint,
+            rightCircle,
+            rightCirclePoint,
+            circleAroundLeftCirclePoint,
+            circleAroundRightCirclePoint,
+            circleIntersections1[0],
+            circleIntersections1[1],
+            ...linesToIntersections,
+            circleCenteredAtIntersection,
+          ],
+        },
+        trace: {
+          canvasModel: prev.trace?.canvasModel ?? null,
+          drawables: [circleCenteredAtIntersectionPoint],
+        },
+      };
+    });
   }
 
-  return <Scene ref={canvasRef} {...{ canvasModel, drawables }}></Scene>;
+  return <Scene ref={sceneCanvasesRef} background={sceneProps?.background} trace={sceneProps?.trace} />;
 }
 
 export default MainScene;

@@ -1,4 +1,4 @@
-import { forwardRef, useEffect } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 import { CanvasModel } from '../../CanvasModel';
 import { Drawable } from '../../Drawables/Drawable';
@@ -6,42 +6,77 @@ import Drawer from '../../Drawer';
 import { Canvas } from '../Canvas';
 import styles from './Scene.module.css';
 
-export type SceneProps = {
+export type SceneLayer = {
   canvasModel: CanvasModel | null;
   drawables: Array<Drawable>;
 };
 
-const Scene = forwardRef<HTMLCanvasElement, SceneProps>(function Scene(
-  { canvasModel, drawables }: SceneProps,
-  ref: React.ForwardedRef<HTMLCanvasElement>
+export type SceneProps = {
+  background: SceneLayer | undefined;
+  trace: SceneLayer | undefined;
+};
+
+export type SceneCanvases = {
+  background: HTMLCanvasElement | null;
+  trace: HTMLCanvasElement | null;
+};
+
+const Scene = forwardRef<SceneCanvases, SceneProps>(function Scene(
+  { background, trace }: SceneProps,
+  ref: React.ForwardedRef<SceneCanvases>
 ) {
+  const backgroundRef = useRef<HTMLCanvasElement | null>(null);
+  const traceRef = useRef<HTMLCanvasElement | null>(null);
+
   useEffect(() => {
-    if (!canvasModel) {
+    if (!background?.canvasModel || !trace?.canvasModel) {
       return;
     }
 
     function step(time: DOMHighResTimeStamp) {
-      if (!canvasModel) {
+      if (!background?.canvasModel || !trace?.canvasModel) {
         return;
       }
 
-      const drawer = new Drawer(canvasModel);
+      const backgroundDrawer = new Drawer(background.canvasModel);
+      const traceDrawer = new Drawer(trace.canvasModel);
 
-      drawables.forEach((d) => drawer.draw(d, time));
+      backgroundDrawer.clear();
+      background.drawables.forEach((d) => backgroundDrawer.draw(d, time));
+      trace.drawables.forEach((d) => traceDrawer.draw(d, time));
 
       window.requestAnimationFrame(step);
     }
 
     window.requestAnimationFrame(step);
-  }, [canvasModel, drawables]);
+  }, [background, trace]);
+
+  useImperativeHandle(
+    ref,
+    (): SceneCanvases => {
+      return {
+        background: backgroundRef.current,
+        trace: traceRef.current,
+      };
+    },
+    []
+  );
 
   return (
-    <Canvas
-      ref={ref}
-      className={styles.canvas}
-      width={canvasModel?.canvasDimensions.width ?? 0}
-      height={canvasModel?.canvasDimensions.height ?? 0}
-    ></Canvas>
+    <>
+      <Canvas
+        ref={backgroundRef}
+        className={styles.canvas}
+        width={background?.canvasModel?.canvasDimensions.width ?? 0}
+        height={background?.canvasModel?.canvasDimensions.height ?? 0}
+      />
+      <Canvas
+        ref={traceRef}
+        className={styles.canvas}
+        width={trace?.canvasModel?.canvasDimensions.width ?? 0}
+        height={trace?.canvasModel?.canvasDimensions.height ?? 0}
+      />
+    </>
   );
 });
 

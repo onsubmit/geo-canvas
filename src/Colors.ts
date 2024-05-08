@@ -2,7 +2,7 @@ export type ColorAtTimeFn = (time: DOMHighResTimeStamp) => string;
 
 export class Colors {
   static black: ColorAtTimeFn = (_time: DOMHighResTimeStamp) => '#000';
-  static lightGrey: ColorAtTimeFn = (_time: DOMHighResTimeStamp) => '#ccc';
+  static lightGrey: ColorAtTimeFn = (_time: DOMHighResTimeStamp) => '#999';
   static veryLightGrey: ColorAtTimeFn = (_time: DOMHighResTimeStamp) => '#eee';
   static colorful: ColorAtTimeFn = (time: DOMHighResTimeStamp) => {
     const r = 128 * (0.5 + Math.cos(time / 1000) / 2);
