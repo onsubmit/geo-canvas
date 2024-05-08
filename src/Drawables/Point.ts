@@ -39,6 +39,7 @@ export class Point extends Drawable {
 
     if (this._trace) {
       if (this._previousPoint) {
+        canvasModel.context.beginPath();
         canvasModel.context.strokeStyle = this.getColor(time);
         canvasModel.context.moveTo(this._previousPoint.x, this._previousPoint.y);
         canvasModel.context.lineTo(p.x, p.y);
