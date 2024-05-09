@@ -3,10 +3,10 @@ import { ColorAtTimeFn, Colors } from '../Colors';
 import { Coordinate } from '../Coordinate';
 
 export abstract class Drawable {
-  protected getColor: ColorAtTimeFn;
+  protected getColorAtTime: ColorAtTimeFn;
 
   constructor(getColorAtTimeFn?: ColorAtTimeFn) {
-    this.getColor = getColorAtTimeFn ?? Colors.black;
+    this.getColorAtTime = getColorAtTimeFn ?? Colors.black;
   }
 
   abstract draw(time: DOMHighResTimeStamp, canvasModel: CanvasModel): void;

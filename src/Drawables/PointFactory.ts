@@ -1,3 +1,4 @@
+import { ColorAtTimeFn, Colors } from '../Colors';
 import { Constants } from '../Constants';
 import { Coordinate } from '../Coordinate';
 import { Circle } from './Circle';
@@ -7,9 +8,10 @@ export class PointFactory {
   static aroundCircle = (args: {
     circle: Circle;
     speed: number;
+    color?: ColorAtTimeFn;
     direction?: 'clockwise' | 'counter-clockwise';
   }): Point => {
-    const { circle, speed, direction = 'counter-clockwise' } = args;
+    const { circle, speed, color = Colors.black, direction = 'counter-clockwise' } = args;
 
     return Point.withGetCoordsAtTime((time) => {
       const rotation = time * speed;
@@ -30,12 +32,16 @@ export class PointFactory {
           y: origin.y + circle.radius * Math.sin(Constants.TWO_PI - rotation),
         };
       }
-    });
+    }, color);
   };
 
   static constant = (coordinate: Coordinate): Point => Point.withConstantCoords(coordinate);
 
-  static circleIntersections = (circle1: Circle, circle2: Circle): [Point, Point] => {
+  static circleIntersections = (
+    circle1: Circle,
+    circle2: Circle,
+    color: ColorAtTimeFn = Colors.black
+  ): [Point, Point] => {
     // https://gist.github.com/jupdike/bfe5eb23d1c395d8a0a1a4ddd94882ac
     function intersectTwoCircles(
       x1: number,
@@ -101,6 +107,9 @@ export class PointFactory {
     }
 
     // TODO: Memoize the result or make a better solution as to not calculate the intersections twice.
-    return [Point.withGetCoordsAtTime(getIntersectionsAtTime(0)), Point.withGetCoordsAtTime(getIntersectionsAtTime(1))];
+    return [
+      Point.withGetCoordsAtTime(getIntersectionsAtTime(0), color),
+      Point.withGetCoordsAtTime(getIntersectionsAtTime(1), color),
+    ];
   };
 }

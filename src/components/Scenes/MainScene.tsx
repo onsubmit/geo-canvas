@@ -4,6 +4,7 @@ import { CanvasModel } from '../../CanvasModel';
 import { Colors } from '../../Colors';
 import { Circle } from '../../Drawables/Circle';
 import { LineSegment } from '../../Drawables/LineSegment';
+import { Point } from '../../Drawables/Point';
 import { PointFactory } from '../../Drawables/PointFactory';
 import { CartesianPlane } from '../CartesianPlane';
 import Scene, { SceneCanvases, SceneProps } from './Scene';
@@ -36,12 +37,12 @@ function MainScene() {
 
     const cartesianPlane: CartesianPlane = {
       x: {
-        min: -6,
+        min: -10,
         max: 10,
       },
       y: {
-        min: -7,
-        max: 8,
+        min: -10,
+        max: 10,
       },
     };
 
@@ -58,63 +59,124 @@ function MainScene() {
   }, [sceneProps?.background?.canvasModel, sceneProps?.trace?.canvasModel]);
 
   function draw() {
-    const leftCircle = new Circle({
-      origin: PointFactory.constant({ x: 0, y: 0 }),
-      radius: 1,
-      color: Colors.lightGrey,
-    });
+    const stationaryCircles: Array<Circle> = [
+      new Circle({
+        origin: PointFactory.constant({ x: -2, y: -2 }),
+        radius: 1.5,
+        color: Colors.veryLightGrey,
+      }),
+      new Circle({
+        origin: PointFactory.constant({ x: -2, y: 2 }),
+        radius: 1.5,
+        color: Colors.veryLightGrey,
+      }),
+      new Circle({
+        origin: PointFactory.constant({ x: 2, y: -2 }),
+        radius: 1.5,
+        color: Colors.veryLightGrey,
+      }),
+      new Circle({
+        origin: PointFactory.constant({ x: 2, y: 2 }),
+        radius: 1.5,
+        color: Colors.veryLightGrey,
+      }),
+    ];
 
-    const rightCircle = new Circle({
-      origin: PointFactory.constant({ x: 3, y: 1 }),
-      radius: 1,
-      color: Colors.lightGrey,
-    });
+    const pointsAroundStationaryCircles: Array<Point> = [
+      PointFactory.aroundCircle({
+        circle: stationaryCircles[0]!,
+        speed: 0.01,
+        direction: 'clockwise',
+      }),
+      PointFactory.aroundCircle({
+        circle: stationaryCircles[1]!,
+        speed: 0.015,
+      }),
+      PointFactory.aroundCircle({
+        circle: stationaryCircles[2]!,
+        speed: 0.01,
+        direction: 'clockwise',
+      }),
+      PointFactory.aroundCircle({
+        circle: stationaryCircles[3]!,
+        speed: 0.015,
+      }),
+    ];
 
-    const leftCirclePoint = PointFactory.aroundCircle({
-      circle: leftCircle,
-      speed: 0.001275,
-    });
-
-    const rightCirclePoint = PointFactory.aroundCircle({
-      circle: rightCircle,
-      speed: 0.0005,
-      direction: 'clockwise',
-    });
-
-    const circleAroundLeftCirclePoint = new Circle({
-      origin: leftCirclePoint,
-      radius: 3,
-      color: Colors.lightGrey,
-    });
-
-    const circleAroundRightCirclePoint = new Circle({
-      origin: rightCirclePoint,
-      radius: 3,
-      color: Colors.lightGrey,
-    });
+    const circlesAroundPointsAroundStationaryCircles: Array<Circle> = [
+      new Circle({
+        origin: pointsAroundStationaryCircles[0]!,
+        radius: 3.7,
+        color: Colors.veryLightGrey,
+      }),
+      new Circle({
+        origin: pointsAroundStationaryCircles[1]!,
+        radius: 3.8,
+        color: Colors.veryLightGrey,
+      }),
+      new Circle({
+        origin: pointsAroundStationaryCircles[2]!,
+        radius: 3.9,
+        color: Colors.veryLightGrey,
+      }),
+      new Circle({
+        origin: pointsAroundStationaryCircles[3]!,
+        radius: 4,
+        color: Colors.veryLightGrey,
+      }),
+    ];
 
     const circleIntersections1 = PointFactory.circleIntersections(
-      circleAroundLeftCirclePoint,
-      circleAroundRightCirclePoint
+      circlesAroundPointsAroundStationaryCircles[0]!,
+      circlesAroundPointsAroundStationaryCircles[1]!
+    );
+
+    const circleIntersections2 = PointFactory.circleIntersections(
+      circlesAroundPointsAroundStationaryCircles[2]!,
+      circlesAroundPointsAroundStationaryCircles[3]!
     );
 
     const linesToIntersections = [
-      new LineSegment({ point1: leftCirclePoint, point2: circleIntersections1[1], color: Colors.lightGrey }),
-      new LineSegment({ point1: rightCirclePoint, point2: circleIntersections1[1], color: Colors.lightGrey }),
+      new LineSegment({
+        point1: pointsAroundStationaryCircles[0]!,
+        point2: circleIntersections1[1]!,
+        color: Colors.veryLightGrey,
+      }),
+      new LineSegment({
+        point1: pointsAroundStationaryCircles[1]!,
+        point2: circleIntersections2[1]!,
+        color: Colors.veryLightGrey,
+      }),
     ];
 
-    const circleCenteredAtIntersection = new Circle({
-      origin: circleIntersections1[1],
-      radius: 2,
-      color: Colors.lightGrey,
-    });
+    const circlesCenteredAtIntersection: Array<Circle> = [
+      new Circle({
+        origin: circleIntersections1[1],
+        radius: 2,
+        color: Colors.veryLightGrey,
+      }),
+      new Circle({
+        origin: circleIntersections2[0],
+        radius: 2,
+        color: Colors.veryLightGrey,
+      }),
+    ];
 
-    const circleCenteredAtIntersectionPoint = PointFactory.aroundCircle({
-      circle: circleCenteredAtIntersection,
-      speed: 0.001,
-    });
+    const circlesCenteredAtIntersectionPoint: Array<Point> = [
+      PointFactory.aroundCircle({
+        circle: circlesCenteredAtIntersection[0]!,
+        speed: 0.0001,
+        color: Colors.red,
+      }),
+      PointFactory.aroundCircle({
+        circle: circlesCenteredAtIntersection[1]!,
+        speed: 0.0001,
+        color: Colors.blue,
+      }),
+    ];
 
-    circleCenteredAtIntersectionPoint.toggleTracing();
+    circlesCenteredAtIntersectionPoint[0]!.toggleTracing();
+    circlesCenteredAtIntersectionPoint[1]!.toggleTracing();
 
     setSceneProps((prev) => {
       if (!prev) {
@@ -125,21 +187,18 @@ function MainScene() {
         background: {
           canvasModel: prev.background?.canvasModel ?? null,
           drawables: [
-            leftCircle,
-            leftCirclePoint,
-            rightCircle,
-            rightCirclePoint,
-            circleAroundLeftCirclePoint,
-            circleAroundRightCirclePoint,
-            circleIntersections1[0],
-            circleIntersections1[1],
+            ...stationaryCircles,
+            ...pointsAroundStationaryCircles,
+            ...circlesAroundPointsAroundStationaryCircles,
+            ...circleIntersections1,
+            ...circleIntersections2,
             ...linesToIntersections,
-            circleCenteredAtIntersection,
+            ...circlesCenteredAtIntersection,
           ],
         },
         trace: {
           canvasModel: prev.trace?.canvasModel ?? null,
-          drawables: [circleCenteredAtIntersectionPoint],
+          drawables: [...circlesCenteredAtIntersectionPoint],
         },
       };
     });
